@@ -416,3 +416,35 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# VS Code settings
+.vscode/
+
+# Node.js dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+out/
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Logs
+*.log
+
+# Environment files
+.env
+
+# Windows specific
+*.exe
+*.dll
+*.obj
+
+# IDE files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
