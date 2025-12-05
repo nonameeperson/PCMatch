@@ -43,6 +43,9 @@ h1 {
 }
 
 .logo {
+  position: absolute; 
+  top: 0; 
+  left: 100px;
   height: 6em;
   padding: 1.5em;
   will-change: filter;
@@ -93,4 +96,52 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}
+
+.search-container {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  position: absolute; 
+  top: 20px; 
+}
+
+#categorySelect1,
+#searchInput {
+  padding: 8px;
+  font-size: 16px;
+  width: 150px;
+;
+}
+
+#categorySelect2,
+#searchInput {
+  padding: 8px;
+  font-size: 16px;
+  width: 150px;
+;
+}
+
+#searchInput {
+  flex: 1;
+  width: 500px;
+}
+
+#searchButton {
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#results {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.result-card {
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 6px;
+  background: #fafafa;
 }
