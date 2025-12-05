@@ -20,31 +20,70 @@ public class BuildController : ControllerBase
 
     [HttpGet("components")]
     public async Task<IActionResult> GetComponents(
-        [FromQuery] string type,
+        [FromQuery] string? type,
         [FromQuery] decimal? minPrice,
-        [FromQuery] decimal? maxPrice)
+        [FromQuery] decimal? maxPrice,
+        [FromQuery] string? search)
     {
         var query = _context.Components.AsQueryable();
 
-        if (!string.IsNullOrEmpty(type))
+        if (!string.IsNullOrEmpty(type)) query = query.Where(c => c.ComponentType == type);
+        if (minPrice.HasValue) query = query.Where(c => c.Price >= minPrice.Value);
+        if (maxPrice.HasValue) query = query.Where(c => c.Price <= maxPrice.Value);
+        if (!string.IsNullOrEmpty(search)) query = query.Where(c => c.Name.Contains(search));
+
+        var components = await query.ToListAsync();
+        var result = new List<object>();
+
+        foreach (var c in components)
         {
-            query = query.Where(c => c.ComponentType == type);
+            string desc = "";
+
+            switch (c.ComponentType)
+            {
+                case "Cpu":
+                    var cpu = _context.Cpus.FirstOrDefault(x => x.Id == c.Id);
+                    if (cpu != null) desc = $"{cpu.Cores} ядер / {cpu.Threads} потоків, {cpu.Socket}, {cpu.BaseClockGhz}-{cpu.BoostClockGhz} GHz";
+                    break;
+                case "Gpu":
+                    var gpu = _context.Gpus.FirstOrDefault(x => x.Id == c.Id);
+                    if (gpu != null) desc = $"{gpu.VramGB} GB пам'яті, Score: {gpu.PerformanceScore}";
+                    break;
+                case "Motherboard":
+                    var mb = _context.Motherboards.FirstOrDefault(x => x.Id == c.Id);
+                    if (mb != null) desc = $"{mb.Socket}, {mb.Chipset}, {mb.RamType}, {mb.FormFactor}";
+                    break;
+                case "Ram":
+                    var ram = _context.Rams.FirstOrDefault(x => x.Id == c.Id);
+                    if (ram != null) desc = $"{ram.CapacityGB} GB, {ram.ModuleCount} планки, {ram.SpeedMhz} MHz, {ram.RamType}";
+                    break;
+                case "Psu":
+                    var psu = _context.Psus.FirstOrDefault(x => x.Id == c.Id);
+                    if (psu != null) desc = $"{psu.Wattage} W, {psu.Rating}";
+                    break;
+                case "Storage":
+                    var st = _context.Storages.FirstOrDefault(x => x.Id == c.Id);
+                    if (st != null) desc = $"{st.CapacityGB} GB, {st.Type}";
+                    break;
+                case "Case":
+                    var ca = _context.Cases.FirstOrDefault(x => x.Id == c.Id);
+                    if (ca != null) desc = $"{ca.FormFactor}";
+                    break;
+            }
+
+            result.Add(new
+            {
+                c.Id,
+                c.Name,
+                c.Price,
+                c.ComponentType,
+                c.Manufacturer,
+                Description = desc
+            });
         }
 
-        if (minPrice.HasValue)
-        {
-            query = query.Where(c => c.Price >= minPrice.Value);
-        }
-
-        if (maxPrice.HasValue)
-        {
-            query = query.Where(c => c.Price <= maxPrice.Value);
-        }
-
-        var result = await query.ToListAsync();
         return Ok(result);
     }
-
     [HttpGet("forecast")]
     public async Task<IActionResult> GetFpsForecast(Guid cpuId, Guid gpuId)
     {
