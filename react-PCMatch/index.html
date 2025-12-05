@@ -4,10 +4,40 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PCMatch site</title>
+    <title>PCMatch</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app" style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif;">
+      <h1>🖥️ PCMatch</h1>
+      
+      <section style="background: #f4f4f4; padding: 20px; border-radius: 10px; margin-bottom: 20px; color: #333;">
+        <h2>🔍 Пошук компонентів</h2>
+        <select id="componentType" style="padding: 8px;">
+            <option value="">Всі компоненти</option>
+            <option value="CPU">Процесори</option>
+            <option value="GPU">Відеокарти</option>
+            <option value="Motherboard">Материнські плати</option>
+            <option value="RAM">Оперативна пам'ять</option>
+            <option value="PSU">Блоки живлення</option>
+        </select>
+        <button id="searchButton" style="padding: 8px 16px; cursor: pointer;">Знайти</button>
+        <div id="searchResults" style="margin-top: 15px; display: grid; gap: 10px;"></div>
+      </section>
+
+      <section style="background: #e3f2fd; padding: 20px; border-radius: 10px; color: #333;">
+        <h2>🤖 Автоматичний підбір ПК</h2>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <input type="number" id="budgetInput" placeholder="Бюджет (грн)" value="30000" style="padding: 8px;">
+            <select id="purposeInput" style="padding: 8px;">
+                <option value="Gaming">Для ігор 🎮</option>
+                <option value="Office">Для офісу 📄</option>
+                <option value="Editing">Монтаж відео 🎬</option>
+            </select>
+            <button id="recommendButton" style="padding: 8px 16px; background: #2196F3; color: white; border: none; cursor: pointer;">Підібрати</button>
+        </div>
+        <div id="recommendResult" style="margin-top: 15px;"></div>
+      </section>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>

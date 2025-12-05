@@ -1,64 +1,58 @@
 import './style.css';
-import viteLogo from '/logo.svg';
-import { getComponents } from './api.js';
+import { getComponents, getRecommendation } from './api.js';
 
-document.querySelector('#app').innerHTML = `
-  <div>
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-      <h1>Hello, and wellcome member!</h1>
-      <p class="read-the-docs">
-        Це ваш кабінет, натисніть "Пошук..." щоб почати збірку
-      </p>
-  </div>
-
-  <div class="search-container">
-    <input type="text" id="searchInput" placeholder="Пошук...">
-
-    <select id="categorySelect1">
-      <option value="">— Компонент —</option>
-      <option value="CPU">Процесори</option>
-      <option value="GPU">Відеокарти</option>
-      <option value="RAM">Оперативна пам'ять</option>
-      <option value="Motherboard">Материнські плати</option>
-      <option value="PSU">Блоки Живлення</option>
-      <option value="Storage">SSD</option>
-    </select>
-
-    <select id="categorySelect2">
-      <option value="">— Ціль —</option>
-      <option value="Games">Для ігор</option>
-      <option value="Office">Для офісу</option>
-      <option value="Editing">Для монтажу</option>
-    </select>
-
-    <button id="searchButton">Найти</button>
-  </div>
-
-  <div id="results"></div>
-`;
-
+// --- Логіка Пошуку ---
 document.querySelector('#searchButton').addEventListener('click', async () => {
-    const searchText = document.querySelector('#searchInput').value;
-    const componentType = document.querySelector('#categorySelect1').value;
-    const purpose = document.querySelector('#categorySelect2').value;
-
-    console.log("Searching:", searchText, componentType, purpose);
-
-    const resultsDiv = document.querySelector("#results");
-    resultsDiv.innerHTML = "Загрузка...";
-
-    // Запрос в BuildController
-    const components = await getComponents(componentType);
-
-    console.log("Components from API:", components);
-
-    resultsDiv.innerHTML = components.length === 0
-        ? "<p>Ничего не найдено</p>"
-        : components.map(c => `
-            <div class="component-card">
-                <h3>${c.name}</h3>
-                <p>Тип: ${c.componentType}</p>
-                <p>Цена: ${c.price} грн</p>
+    const type = document.querySelector('#componentType').value;
+    const container = document.querySelector("#searchResults");
+    
+    container.innerHTML = "Завантаження...";
+    try {
+        const items = await getComponents(type);
+        if(items.length === 0) {
+            container.innerHTML = "Нічого не знайдено.";
+            return;
+        }
+        container.innerHTML = items.map(item => `
+            <div style="background: white; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                <strong>${item.name}</strong> <br>
+                Ціна: ${item.price} грн | Тип: ${item.componentType}
             </div>
-          `).join('');
+        `).join('');
+    } catch (e) {
+        container.innerHTML = `<span style="color:red">Помилка: ${e.message}</span>`;
+    }
+});
+
+// --- Логіка Автопідбору ---
+document.querySelector('#recommendButton').addEventListener('click', async () => {
+    const budget = document.querySelector('#budgetInput').value;
+    const purpose = document.querySelector('#purposeInput').value;
+    const container = document.querySelector("#recommendResult");
+
+    container.innerHTML = "ШІ підбирає найкращу збірку...";
+    
+    try {
+        const data = await getRecommendation(purpose, budget);
+        
+        // Формуємо красивий список
+        let html = `<h3>Збірка готова! (Загалом: ${data.totalPrice} грн)</h3><ul>`;
+        
+        // Перебираємо отримані компоненти
+        for (const [key, part] of Object.entries(data.build)) {
+            if(part) {
+                html += `<li><b>${key}:</b> ${part.name} — ${part.price} грн</li>`;
+            } else {
+                html += `<li style="color:red"><b>${key}:</b> Не вистачило бюджету :(</li>`;
+            }
+        }
+        html += `</ul><p>Залишок грошей: ${data.remainingBudget} грн</p>`;
+        
+        container.innerHTML = html;
+    } catch (e) {
+        container.innerHTML = `
+            <div style="background: #ffcdd2; padding: 10px; border-radius: 5px; color: #b71c1c;">
+                <b>Помилка підбору:</b> ${e.message}
+            </div>`;
+    }
 });

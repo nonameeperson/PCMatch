@@ -1,12 +1,25 @@
-// Получение компонентов
-export async function getComponents(type, minPrice, maxPrice) {
+export async function getComponents(type) {
+    // URL тепер відносний, проксі (див. крок 1) перенаправить його куди треба
     const url = new URL('/api/build/components', window.location.origin);
-
     if (type) url.searchParams.append('type', type);
-    if (minPrice) url.searchParams.append('minPrice', minPrice);
-    if (maxPrice) url.searchParams.append('maxPrice', maxPrice);
 
     const res = await fetch(url);
+    if (!res.ok) throw new Error('Failed to fetch components');
+    return res.json();
+}
+
+// Нова функція для автопідбору
+export async function getRecommendation(purpose, budget) {
+    const url = new URL('/api/build/recommend', window.location.origin);
+    url.searchParams.append('purpose', purpose);
+    url.searchParams.append('budget', budget);
+
+    const res = await fetch(url);
+    if (!res.ok) {
+        // Читаємо текст помилки з бекенда (наприклад "Бюджет замалий")
+        const errorText = await res.text();
+        throw new Error(errorText);
+    }
     return res.json();
 }
 
