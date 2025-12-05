@@ -12,20 +12,20 @@ document.querySelector('#app').innerHTML = `
   </div>
 
   <div class="search-container">
-    <input type="text" id="searchInput" placeholder="Поиск...">
+    <input type="text" id="searchInput" placeholder="Пошук...">
 
     <select id="categorySelect1">
       <option value="">— Компонент —</option>
-      <option value="CPU">Процессоры</option>
-      <option value="GPU">Видеокарты</option>
-      <option value="RAM">Оперативная память</option>
-      <option value="Motherboard">Материнские платы</option>
-      <option value="PSU">Блоки питания</option>
+      <option value="CPU">Процесори</option>
+      <option value="GPU">Відеокарти</option>
+      <option value="RAM">Оперативна пам'ять</option>
+      <option value="Motherboard">Материнські плати</option>
+      <option value="PSU">Блоки Живлення</option>
       <option value="Storage">SSD</option>
     </select>
 
     <select id="categorySelect2">
-      <option value="">— Цель —</option>
+      <option value="">— Ціль —</option>
       <option value="Games">Для ігор</option>
       <option value="Office">Для офісу</option>
       <option value="Editing">Для монтажу</option>
