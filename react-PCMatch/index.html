@@ -1,42 +1,126 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="uk">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>PCMatch</title>
+    <title>PCMatch Builder</title>
   </head>
   <body>
-    <div id="app" style="max-width: 800px; margin: 0 auto; padding: 20px; font-family: sans-serif;">
-      <h1>🖥️ PCMatch</h1>
-      
-      <section style="background: #f4f4f4; padding: 20px; border-radius: 10px; margin-bottom: 20px; color: #333;">
-        <h2>🔍 Пошук компонентів</h2>
-        <select id="componentType" style="padding: 8px;">
-            <option value="">Всі компоненти</option>
-            <option value="CPU">Процесори</option>
-            <option value="GPU">Відеокарти</option>
-            <option value="Motherboard">Материнські плати</option>
-            <option value="RAM">Оперативна пам'ять</option>
-            <option value="PSU">Блоки живлення</option>
-        </select>
-        <button id="searchButton" style="padding: 8px 16px; cursor: pointer;">Знайти</button>
-        <div id="searchResults" style="margin-top: 15px; display: grid; gap: 10px;"></div>
-      </section>
+    <div id="app">
+      <header
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 30px;
+        "
+      >
+        <h1 style="margin: 0">PCMatch</h1>
+      </header>
 
-      <section style="background: #e3f2fd; padding: 20px; border-radius: 10px; color: #333;">
-        <h2>🤖 Автоматичний підбір ПК</h2>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-            <input type="number" id="budgetInput" placeholder="Бюджет (грн)" value="30000" style="padding: 8px;">
-            <select id="purposeInput" style="padding: 8px;">
-                <option value="Gaming">Для ігор 🎮</option>
-                <option value="Office">Для офісу 📄</option>
-                <option value="Editing">Монтаж відео 🎬</option>
-            </select>
-            <button id="recommendButton" style="padding: 8px 16px; background: #2196F3; color: white; border: none; cursor: pointer;">Підібрати</button>
+      <div class="main-grid">
+        <div>
+          <section class="panel">
+            <h2 style="display: flex; align-items: center; gap: 10px">
+              Каталог компонентів
+            </h2>
+
+            <div
+              style="
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+                margin-bottom: 15px;
+              "
+            >
+              <input
+                type="text"
+                id="searchName"
+                placeholder="Назва (напр. Intel)"
+                style="flex: 1"
+              />
+              <select id="componentType">
+                <option value="">Всі типи</option>
+                <option value="Cpu">Процесори</option>
+                <option value="Gpu">Відеокарти</option>
+                <option value="Motherboard">Материнські плати</option>
+                <option value="Ram">RAM</option>
+                <option value="Psu">Блоки живлення</option>
+                <option value="Storage">SSD/HDD</option>
+                <option value="Case">Корпуси</option>
+              </select>
+              <button id="searchButton" class="btn-primary">Знайти</button>
+            </div>
+
+            <div style="display: flex; gap: 10px; align-items: center">
+              <input type="number" id="minPrice" placeholder="Мін ($)" />
+              <span>—</span>
+              <input type="number" id="maxPrice" placeholder="Макс ($)" />
+            </div>
+          </section>
+
+          <div id="searchResults"></div>
+
+          <div
+            id="paginationControls"
+            style="margin-top: 20px; text-align: center; display: none"
+          >
+            <button id="prevPage" class="btn-primary">Назад</button>
+            <span id="pageIndicator" style="margin: 0 15px">Сторінка 1</span>
+            <button id="nextPage" class="btn-primary">Вперед</button>
+          </div>
         </div>
-        <div id="recommendResult" style="margin-top: 15px;"></div>
-      </section>
+
+        <div style="display: flex; flex-direction: column; gap: 20px">
+          <section class="panel" style="border: 1px solid #646cff">
+            <h2 style="color: #646cff">Мій ПК (Збірка)</h2>
+            <ul
+              id="currentBuildList"
+              class="build-list"
+              style="padding: 0; margin: 0"
+            >
+              <p style="color: #888">Поки що пусто.</p>
+            </ul>
+
+            <div
+              style="
+                margin-top: 20px;
+                border-top: 1px solid #555;
+                padding-top: 15px;
+              "
+            >
+              <h3>
+                Загалом:
+                <span id="totalBuildPrice" style="color: #4caf50">0 $</span>
+              </h3>
+              <button id="validateButton" class="btn-success">
+                Перевірити сумісність
+              </button>
+              <div id="validationResult" style="margin-top: 15px"></div>
+            </div>
+          </section>
+
+          <section class="panel" style="background-color: #2a2a2a">
+            <h3>Швидкий автопідбір</h3>
+            <div style="display: flex; flex-direction: column; gap: 10px">
+              <input type="number" id="budgetInput" placeholder="Бюджет ($)" />
+              <select id="purposeInput">
+                <option value="Gaming">Для ігор</option>
+                <option value="Office">Для офісу</option>
+              </select>
+              <button
+                id="recommendButton"
+                class="btn-primary"
+                style="background-color: #008cba"
+              >
+                Підібрати
+              </button>
+            </div>
+            <div id="recommendResult" style="margin-top: 15px"></div>
+          </section>
+        </div>
+      </div>
     </div>
     <script type="module" src="/src/main.js"></script>
   </body>
